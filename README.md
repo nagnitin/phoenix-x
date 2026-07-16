@@ -1,4 +1,4 @@
-# 32-Bit Pipelined FPGA Microcontroller SoC
+# 32-Bit Pipelined FPGA Microcontroller System-on-Chip (SoC)
 
 A complete, professional-grade 32-bit pipelined Harvard-architecture microcontroller System-on-Chip (SoC) designed entirely from scratch in synthesizable Verilog HDL. This SoC contains a custom 5-stage pipelined CPU core, data forwarding, hazard detection, prioritized interrupts, a rich set of memory-mapped communication peripherals (UART, SPI, I2C, Timers, PWM), security modules, and custom drivers for external physical hardware interfaces.
 

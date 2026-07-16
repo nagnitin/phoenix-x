@@ -60,6 +60,8 @@ module cpu_core (
     wire [4:0]  id_rd;
     wire [4:0]  id_rs1;
     wire [4:0]  id_rs2;
+    wire [4:0]  id_rs2_decoded;
+    assign id_rs2 = (id_opcode == 6'h1C || id_opcode == 6'h1D || id_opcode == 6'h1E || id_opcode == 6'h1F) ? id_rd : id_rs2_decoded;
     wire [10:0] id_func;
     wire [15:0] id_imm16;
     wire [25:0] id_target26;
@@ -226,7 +228,7 @@ module cpu_core (
         .opcode       (id_opcode),
         .rd           (id_rd),
         .rs1          (id_rs1),
-        .rs2          (id_rs2),
+        .rs2          (id_rs2_decoded),
         .func         (id_func),
         .imm16        (id_imm16),
         .target26     (id_target26),
@@ -359,7 +361,7 @@ module cpu_core (
         endcase
     end
 
-    assign alu_operand_b = ex_alu_src ? ex_immediate : operand_b_forwarded;
+    assign alu_operand_b = ex_is_push ? 32'd4 : (ex_alu_src ? ex_immediate : operand_b_forwarded);
 
     alu alu_inst (
         .operand_a (operand_a_forwarded),
@@ -445,6 +447,9 @@ module cpu_core (
     // Pass the original register values down for Store operations or POP addresses
     wire [31:0] ex_store_data = ex_is_pop ? operand_a_forwarded : operand_b_forwarded;
 
+    wire mem_is_push_wire;
+    wire mem_is_pop_wire;
+
     ex_mem_reg ex_mem_reg_inst (
         .clk            (clk),
         .rst_n          (rst_n),
@@ -455,6 +460,8 @@ module cpu_core (
         .ex_reg_write   (ex_reg_write),
         .ex_mem_to_reg  (ex_mem_to_reg),
         .ex_is_call     (ex_is_call),
+        .ex_is_push     (ex_is_push),
+        .ex_is_pop      (ex_is_pop),
         .ex_halt        (ex_halt),
         .ex_is_io_in    (ex_is_io_in),
         .ex_is_io_out   (ex_is_io_out),
@@ -470,6 +477,8 @@ module cpu_core (
         .mem_reg_write  (mem_reg_write),
         .mem_mem_to_reg (mem_mem_to_reg),
         .mem_is_call    (mem_is_call),
+        .mem_is_push    (mem_is_push_wire),
+        .mem_is_pop     (mem_is_pop_wire),
         .mem_halt       (mem_halt),
         .mem_is_io_in   (mem_is_io_in),
         .mem_is_io_out  (mem_is_io_out),
@@ -497,10 +506,6 @@ module cpu_core (
     assign dmem_re    = mem_mem_read;
     assign dmem_byte  = mem_mem_byte;
 
-    // Store push/pop signals for SP writeback
-    wire mem_is_push = (mem_mem_write && (mem_rd_addr == 5'd29)); // SP write
-    wire mem_is_pop  = (mem_mem_read && (mem_rd_addr == 5'd29));
-
     // Latch POP signals to WB
     reg wb_is_push_reg, wb_is_pop_reg;
     always @(posedge clk or negedge rst_n) begin
@@ -508,8 +513,8 @@ module cpu_core (
             wb_is_push_reg <= 1'b0;
             wb_is_pop_reg  <= 1'b0;
         end else begin
-            wb_is_push_reg <= mem_is_push;
-            wb_is_pop_reg  <= mem_is_pop;
+            wb_is_push_reg <= mem_is_push_wire;
+            wb_is_pop_reg  <= mem_is_pop_wire;
         end
     end
     assign wb_is_push = wb_is_push_reg;

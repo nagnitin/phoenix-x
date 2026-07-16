@@ -93,13 +93,21 @@ module top #(
     wire        cpu_byte;
     wire        cpu_ready;
 
+    // CPU Core Instruction Fetch Path (Harvard Direct)
+    wire [31:0] imem_addr;
+    wire [31:0] imem_rdata;
+
     // Boot ROM <-> Memory Controller
     wire [7:0]  boot_addr;
     wire [31:0] boot_rdata;
+    wire [7:0]  boot_rom_addr;
+    assign boot_rom_addr = (imem_addr < 32'h0000_1000) ? imem_addr[9:2] : boot_addr;
 
     // Instruction ROM <-> Memory Controller
     wire [11:0] irom_addr;
     wire [31:0] irom_rdata;
+    assign irom_addr = (imem_addr - 32'h0000_1000) >> 2;
+    assign imem_rdata = (imem_addr < 32'h0000_1000) ? boot_rdata : irom_rdata;
 
     // Data RAM <-> Memory Controller
     wire [12:0] dram_addr;
@@ -138,6 +146,9 @@ module top #(
     wire [31:0] pwm_rdata;
     wire [31:0] irq_ctrl_rdata;
     wire [31:0] wdog_rdata;
+    wire [31:0] wdt_rdata;
+    wire [31:0] crc_rdata;
+    assign wdog_rdata = (periph_addr[7:6] == 2'b01) ? crc_rdata : wdt_rdata;
     wire [31:0] debug_rdata;
     wire [31:0] lcd_rdata;
     wire [31:0] oled_rdata;
@@ -196,9 +207,9 @@ module top #(
     cpu_core cpu_core_inst (
         .clk            (clk),
         .rst_n          (rst_n & ~wdt_reset),
-        .imem_addr      (cpu_addr),
-        .imem_rdata     (cpu_rdata), // Note: Shared bus read data
-        .dmem_addr      (),          // Handled via memory controller using cpu_addr
+        .imem_addr      (imem_addr),
+        .imem_rdata     (imem_rdata),
+        .dmem_addr      (cpu_addr),
         .dmem_wdata     (cpu_wdata),
         .dmem_we        (cpu_we),
         .dmem_re        (cpu_re),
@@ -229,7 +240,7 @@ module top #(
         .cpu_ready       (cpu_ready),
         .boot_addr       (boot_addr),
         .boot_rdata      (boot_rdata),
-        .irom_addr       (irom_addr),
+        .irom_addr       (),
         .irom_rdata      (irom_rdata),
         .dram_addr       (dram_addr),
         .dram_we         (dram_we),
@@ -276,7 +287,7 @@ module top #(
     // 3. Boot ROM (1 KB)
     boot_rom boot_rom_inst (
         .clk      (clk),
-        .addr     (boot_addr),
+        .addr     (boot_rom_addr),
         .data_out (boot_rdata)
     );
 
@@ -408,7 +419,7 @@ module top #(
         .reg_addr      (periph_addr[1:0]),
         .reg_we        (periph_we & wdog_cs),
         .reg_wdata     (periph_wdata),
-        .reg_rdata     (wdog_rdata),
+        .reg_rdata     (wdt_rdata),
         .wdt_irq       (wdt_irq),
         .wdt_reset_out (wdt_reset)
     );
@@ -420,7 +431,7 @@ module top #(
         .reg_addr  (periph_addr[1:0]),
         .reg_we    (periph_we & (periph_addr[7:6] == 2'b01) & wdog_cs), // mapped in shared space
         .reg_wdata (periph_wdata),
-        .reg_rdata (crc_busy ? 32'h0 : wdog_rdata), // simplified
+        .reg_rdata (crc_rdata),
         .busy      (crc_busy)
     );
 

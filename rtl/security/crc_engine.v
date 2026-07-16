@@ -107,7 +107,7 @@ module crc_engine (
         case (reg_addr)
             2'b00:   reg_rdata = {29'h0, calc_in_progress, crc_mode, crc_en};
             2'b01:   reg_rdata = 32'h0; // Write-only input data
-            2'b12:   reg_rdata = crc_accum; // CRC_RESULT
+            2'd2:    reg_rdata = crc_accum; // CRC_RESULT
             default: reg_rdata = 32'h0;
         endcase
     end

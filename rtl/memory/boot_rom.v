@@ -52,7 +52,7 @@ module boot_rom (
 
         // --- Boot sequence (hand-encoded) ---
         // ADDI R29, R0, 0x7FFC  ; Init stack pointer to top of Data RAM
-        boot_mem[0]  = 32'h0BE0_7FFC;
+        boot_mem[0]  = 32'h0BA0_7FFC;
         // ADDI R1..R28 = 0 (clear GPRs using ADDI Rn, R0, 0)
         // ADDI Rn, R0, 0: opcode=0x02, rd=n, rs1=0, imm=0
         // Pattern: {6'h02, rd[4:0], 5'h00, 16'h0000}

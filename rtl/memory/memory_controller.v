@@ -94,7 +94,7 @@ module memory_controller (
     // Address extractions for each memory target
     // -------------------------------------------------------------------------
     assign boot_addr   = cpu_addr[9:2];        // Word address in Boot ROM
-    assign irom_addr   = cpu_addr[13:2];       // Word address in IROM
+    assign irom_addr   = (cpu_addr - 32'h0000_1000) >> 2; // Word address in IROM (offset by 0x1000 base)
     assign dram_addr   = cpu_addr[14:2];       // Word address in DRAM
     assign periph_addr = cpu_addr[7:0];        // Byte offset within peripheral
     assign periph_wdata = cpu_wdata;

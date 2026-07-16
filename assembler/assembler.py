@@ -166,8 +166,8 @@ def assemble_line(opcode, args, pc, labels):
         else:
             offset = parse_imm(target_str)
         imm16 = offset & 0xFFFF
-        # For branches, standard layout: rs1 in [20:16], rs2 in [15:11]
-        return (op << 26) | (rs1 << 16) | (rs2 << 11) | imm16
+        # For branches, encode rs2 in rd (bits 25:21), rs1 in rs1 (bits 20:16), offset in imm16 (bits 15:0)
+        return (op << 26) | (rs2 << 21) | (rs1 << 16) | imm16
 
     # 11. IN / OUT
     if opcode == "IN":

@@ -645,7 +645,7 @@ Covers: Abstract, Problem Statement, Novel Contributions, Architecture, RTL Impl
 
 ---
 
-## Author
+## Created by
 
 **Nitin**, **Bhargab**, **Nahid**, **Ankita**, **Denim**
 

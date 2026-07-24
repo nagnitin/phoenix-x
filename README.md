@@ -586,8 +586,7 @@ Covers: Abstract, Problem Statement, Novel Contributions, Architecture, RTL Impl
 
 ## Author
 
-**Nitin**
-B.Tech — VLSI Domain
-Project: Phoenix-X — 32-Bit Heterogeneous Compute SoC
+**Nitin**, **Nahid** , **Bhargab** , **Ankita** , **Denim**
+
 
 > *"Built every module from scratch — CPU pipeline, caches, AXI crossbar, GPU rasterizer, NPU systolic array, security engine, and power controller — all in synthesizable Verilog-2001 on an Artix-7 FPGA."*

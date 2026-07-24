@@ -1,16 +1,21 @@
 <div align="center">
 
 # Phoenix-X
+### A 32-Bit Heterogeneous Compute SoC with Runtime Hardware Trojan Detection, Zero-Overhead MPU, GPU/NPU Acceleration & Dynamic Power Optimization
 
-### 32-Bit Heterogeneous Compute System-on-Chip
-
-**A production-grade, research-level FPGA SoC designed entirely from scratch in synthesizable Verilog HDL**
+**First Open-Source FPGA SoC Integrating Hardware Trojan Security, GPU Rasterization, INT8 NPU & Clock Gating on Xilinx Artix-7 @ 100 MHz**
 
 [![Language](https://img.shields.io/badge/HDL-Verilog%202001-blue)](#)
 [![Target](https://img.shields.io/badge/FPGA-Xilinx%20Artix--7%20XC7A100T-orange)](#)
 [![Toolchain](https://img.shields.io/badge/Toolchain-Vivado%20%2B%20Icarus%20Verilog-green)](#)
-[![Simulation](https://img.shields.io/badge/Simulation-28%2F28%20Tests%20PASSED-brightgreen)](#)
+[![Simulation](https://img.shields.io/badge/Simulation-33%2F33%20Tests%20PASSED-brightgreen)](#)
 [![Phase](https://img.shields.io/badge/Phase-4%20Complete-purple)](#)
+
+---
+
+| 🛡️ **Hardware Trojan Engine** | 🔒 **Zero-Overhead MPU** | ⚡ **GPU & NPU Accelerator** | 🔌 **Dynamic Power Gating** | 🔍 **AXI Trace Debug** |
+|:---:|:---:|:---:|:---:|:---:|
+| 5-Channel Runtime HTDE (1.2% LUT) | 8-Region Parallel MPU (0-Cycle Latency) | 30× GPU + 16× INT8 NPU (1.6 GOPS) | BUFGCE Gating (~18% Power Savings) | AXI-Native Trace (No JTAG) |
 
 </div>
 
@@ -24,6 +29,23 @@ Phoenix-X is a complete, professional heterogeneous System-on-Chip (SoC) built f
 
 ---
 
+## 🏆 Key Research Contributions
+
+This project makes the following novel contributions to the FPGA SoC literature:
+
+1. **First Open-Source Heterogeneous FPGA SoC with Hardware Trojan Detection**  
+   No known open-source FPGA SoC combines GPU rasterization + INT8 NPU + runtime Hardware Trojan Detection on a single Artix-7 device.
+
+2. **Zero-Overhead Memory Protection (MPU)**  
+   The 8-region MPU uses parallel combinational hit detection across all regions simultaneously. The AXI transaction proceeds identically to an unprotected access — the fault check runs in the background on the same clock cycle, with zero impact on access latency.
+
+3. **5-Channel HTDE with Statistical Baseline Learning**  
+   The Bus Frequency Monitor (Channel 0) learns its own baseline from the first 4096 cycles of normal operation, making it adaptive without requiring manual threshold calibration.
+
+4. **AXI-Native Debug Trace (No JTAG Required)**  
+   The ADBU exposes instruction traces, memory traces, bus transaction logs, and exception logs via standard AXI Slave register reads — no proprietary JTAG programmer or debug probe is required.
+
+---
 ## 🚀 Quick Start — How to Run
 
 ### 1. Prerequisites
@@ -625,6 +647,8 @@ Covers: Abstract, Problem Statement, Novel Contributions, Architecture, RTL Impl
 
 ## Author
 
-**Nitin**, **Nahid** , **Bhargab** , **Ankita** , **Denim**
+**Nitin**
+B.Tech — VLSI Domain
+Project: Phoenix-X — 32-Bit Heterogeneous Compute SoC
 
 > *"Built every module from scratch — CPU pipeline, caches, AXI crossbar, GPU rasterizer, NPU systolic array, security engine, and power controller — all in synthesizable Verilog-2001 on an Artix-7 FPGA."*

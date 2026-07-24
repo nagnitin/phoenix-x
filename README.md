@@ -24,6 +24,45 @@ Phoenix-X is a complete, professional heterogeneous System-on-Chip (SoC) built f
 
 ---
 
+## 🚀 Quick Start — How to Run
+
+### 1. Prerequisites
+Ensure you have **Python 3** and **Icarus Verilog** installed (`iverilog` and `vvp` in your PATH).
+
+### 2. Run Complete Phase 4 System Simulation (All 9 Benchmarks)
+
+#### 💻 Windows (PowerShell / Command Prompt)
+```powershell
+# 1. Assemble program
+python assembler/assembler.py programs/uart_terminal.asm prog.hex
+
+# 2. Compile full SoC testbench
+C:\iverilog\bin\iverilog.exe -DSIMULATION -I rtl/phoenix_x/axi -o sim/phoenix_x_phase4.out rtl/core/*.v rtl/memory/*.v rtl/peripherals/*.v rtl/interrupt/*.v rtl/security/*.v rtl/drivers/*.v rtl/phoenix_x/axi/*.v rtl/phoenix_x/cache/*.v rtl/phoenix_x/dma/*.v rtl/phoenix_x/ipc/*.v rtl/phoenix_x/pic/*.v rtl/phoenix_x/gpu/*.v rtl/phoenix_x/npu/*.v rtl/phoenix_x/scheduler/*.v rtl/phoenix_x/pmu/*.v rtl/phoenix_x/security/*.v rtl/phoenix_x/power/*.v rtl/phoenix_x/debug/*.v rtl/phoenix_x/top/*.v tb/tb_phase4_full.v
+
+# 3. Run simulation
+C:\iverilog\bin\vvp.exe sim/phoenix_x_phase4.out
+```
+
+#### 🐧 Linux / macOS (Bash / Zsh)
+```bash
+# 1. Assemble program
+python3 assembler/assembler.py programs/uart_terminal.asm prog.hex
+
+# 2. Compile full SoC testbench
+iverilog -DSIMULATION -I rtl/phoenix_x/axi -o sim/phoenix_x_phase4.out rtl/core/*.v rtl/memory/*.v rtl/peripherals/*.v rtl/interrupt/*.v rtl/security/*.v rtl/drivers/*.v rtl/phoenix_x/axi/*.v rtl/phoenix_x/cache/*.v rtl/phoenix_x/dma/*.v rtl/phoenix_x/ipc/*.v rtl/phoenix_x/pic/*.v rtl/phoenix_x/gpu/*.v rtl/phoenix_x/npu/*.v rtl/phoenix_x/scheduler/*.v rtl/phoenix_x/pmu/*.v rtl/phoenix_x/security/*.v rtl/phoenix_x/power/*.v rtl/phoenix_x/debug/*.v rtl/phoenix_x/top/*.v tb/tb_phase4_full.v
+
+# 3. Run simulation
+vvp sim/phoenix_x_phase4.out
+```
+
+### 3. Inspect Waveforms in GTKWave
+```powershell
+gtkwave sim/phase4_full.vcd
+```
+
+
+---
+
 ## Key Features at a Glance
 
 | Category | Feature | Detail |
@@ -587,6 +626,5 @@ Covers: Abstract, Problem Statement, Novel Contributions, Architecture, RTL Impl
 ## Author
 
 **Nitin**, **Nahid** , **Bhargab** , **Ankita** , **Denim**
-
 
 > *"Built every module from scratch — CPU pipeline, caches, AXI crossbar, GPU rasterizer, NPU systolic array, security engine, and power controller — all in synthesizable Verilog-2001 on an Artix-7 FPGA."*

@@ -55,7 +55,7 @@ fibonacci:
     # Iterate to compute Fib(N)
     # R2 = F(n-1) = 1, R3 = F(n-2) = 0, R4 = temp, R5 = counter
     ADDI R2, R0, 1
-    ADDI R3, R0, 0
+    ADDI R3, R0, 1
     ADDI R5, R0, 2       # Start counting at index 2
 
 fib_loop:

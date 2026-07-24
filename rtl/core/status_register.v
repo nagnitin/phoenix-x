@@ -73,8 +73,8 @@ module status_register (
     // -------------------------------------------------------------------------
     always @(posedge clk) begin
         if (!rst_n) begin
-            // After reset: interrupts disabled, supervisor mode, all flags clear
-            status <= 8'b1000_0000;   // I=0, S=1
+            // After reset: interrupts enabled, supervisor mode, all flags clear
+            status <= 8'b1001_0000;   // I=1, S=1
         end else if (direct_write) begin
             // IRET restores the saved status register
             status <= direct_data;

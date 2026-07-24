@@ -1,0 +1,12 @@
+# Simulation outputs and temporary files
+*.out
+*.vcd
+sim/*.out
+sim/*.vcd
+sim/trace.txt
+prog_temp.hex
+
+# OS / IDE generated
+.DS_Store
+Thumbs.db
+*.swp

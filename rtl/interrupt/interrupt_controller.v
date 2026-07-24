@@ -62,17 +62,20 @@ module interrupt_controller (
     reg [7:0] irq_pending;      // Software-clearable pending bits
 
     // -------------------------------------------------------------------------
-    // Interrupt Vector Table (IVT) — fixed addresses
-    // Vector[n] = 0x00000100 + n*8 (within Boot ROM space)
+    // Interrupt Vector Table (IVT) — hardware default table
     // -------------------------------------------------------------------------
-    function [31:0] get_vector;
-        input [2:0] num;
-        begin
-            get_vector = 32'h0000_0100 + {26'h0, num, 3'h0}; // num * 8
-        end
-    endfunction
+    wire [31:0] isr_address;
+    interrupt_vector_table ivt_inst (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .irq_num     (irq_num),
+        .isr_address (isr_address),
+        .we          (1'b0),
+        .wr_num      (3'd0),
+        .wr_addr     (32'd0)
+    );
 
-    assign irq_vector = get_vector(irq_num);
+    assign irq_vector = isr_address;
 
     // -------------------------------------------------------------------------
     // Priority encoder — find lowest-numbered set bit
@@ -84,7 +87,7 @@ module interrupt_controller (
     // -------------------------------------------------------------------------
     always @(posedge clk) begin
         if (!rst_n) begin
-            irq_enable  <= 8'hFF;   // All enabled after reset
+            irq_enable  <= 8'hF3;   // Disable UART RX (bit 2) and TX (bit 3) on reset
             irq_pending <= 8'h0;
             irq_out     <= 1'b0;
             irq_num     <= 3'h0;

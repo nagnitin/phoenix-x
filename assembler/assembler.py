@@ -144,8 +144,8 @@ def assemble_line(opcode, args, pc, labels):
     if opcode == "PUSH":
         rs2 = parse_reg(args[0]) # data to push
         rs1 = 29 # SP
-        # PUSH decrements SP by 4, so offset is -4 (represented as 0xFFFC in 16-bit)
-        return (op << 26) | (rs1 << 16) | (rs2 << 11) | 0xFFFC
+        # PUSH decrements SP by 4 (forced to 4 in hardware, immediate not needed in instruction bits 15:0)
+        return (op << 26) | (rs1 << 16) | (rs2 << 11)
 
     # 9. POP
     if opcode == "POP":
@@ -234,7 +234,7 @@ def assemble(input_file, output_file):
         pc += 4
 
     # Pass 2: Generate machine code
-    machine_codes = []
+    machine_codes = [0] * 4096
     for pc, line in cleaned_lines:
         # Parse mnemonic and arguments
         parts = re.split(r"[\s,]+", line)
@@ -243,12 +243,17 @@ def assemble(input_file, output_file):
 
         try:
             code = assemble_line(opcode, args, pc, labels)
-            machine_codes.append(code)
+            index = (pc - 0x1000) // 4
+            if 0 <= index < 4096:
+                machine_codes[index] = code
+            else:
+                print(f"Error: Address 0x{pc:08X} is out of instruction ROM bounds (0x1000 - 0x4FFF)", file=sys.stderr)
+                sys.exit(1)
         except Exception as e:
             print(f"Error at address 0x{pc:08X}: '{line}' -> {e}", file=sys.stderr)
             sys.exit(1)
 
-    # Write Verilog hex initialization file
+    # Write Verilog hex initialization file (4096 words to match instruction ROM size)
     with open(output_file, "w") as f:
         for code in machine_codes:
             f.write(f"{code:08X}\n")

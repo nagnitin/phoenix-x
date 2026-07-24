@@ -45,6 +45,15 @@ module cpu_core (
 
     // Hazard signals
     wire stall_if, stall_id, flush_if, flush_id, flush_ex;
+    reg flush_if_reg;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            flush_if_reg <= 1'b0;
+        end else begin
+            flush_if_reg <= flush_if;
+        end
+    end
+    wire flush_if_extended = flush_if | flush_if_reg;
 
     // IF stage wires
     wire [31:0] pc_out;
@@ -197,13 +206,24 @@ module cpu_core (
     );
 
     assign imem_addr   = pc_out;
-    assign if_pc_plus4 = pc_out + 32'd4;
+    reg [31:0] pc_out_d1;
+    reg [31:0] pc_out_d2;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            pc_out_d1 <= 32'h0;
+            pc_out_d2 <= 32'h0;
+        end else if (!(stall_if | global_stall)) begin
+            pc_out_d1 <= pc_out;
+            pc_out_d2 <= pc_out_d1;
+        end
+    end
+    assign if_pc_plus4 = pc_out_d2 + 32'd4;
 
     instruction_register ir_inst (
         .clk             (clk),
         .rst_n           (rst_n),
         .stall           (stall_if | global_stall),
-        .flush           (flush_if),
+        .flush           (flush_if_extended),
         .instruction_in  (imem_rdata),
         .instruction_out (if_instruction)
     );
@@ -212,7 +232,7 @@ module cpu_core (
         .clk            (clk),
         .rst_n          (rst_n),
         .stall          (stall_id | global_stall),
-        .flush          (flush_if),
+        .flush          (flush_if_extended),
         .if_pc_plus4    (if_pc_plus4),
         .if_instruction (if_instruction),
         .id_pc_plus4    (id_pc_plus4),
@@ -383,9 +403,9 @@ module cpu_core (
         .is_jump       (ex_jump),
         .is_ret        (ex_is_ret),
         .opcode        (ex_opcode),
-        .flag_z        (ex_alu_z),
-        .flag_n        (ex_alu_n),
-        .flag_v        (ex_alu_v),
+        .flag_z        (status_out[0]),
+        .flag_n        (status_out[1]),
+        .flag_v        (status_out[3]),
         .branch_taken  (branch_taken),
         .branch_target (branch_target)
     );

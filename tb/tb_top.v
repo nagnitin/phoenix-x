@@ -80,7 +80,7 @@ module tb_top;
 
     // Instantiate Top-Level System Under Test
     top #(
-        .MEM_FILE ("prog.hex")
+        .MEM_FILE ("c:/Users/nitin/OneDrive/Desktop/32_Bit/prog_temp.hex")
     ) uut (
         .clk              (clk),
         .rst_n            (rst_n),
@@ -147,8 +147,8 @@ module tb_top;
         $display("[TB] Simulation timed out. Displaying final registers...");
         // Print general registers for debugging
         $display("R0=%X R1=%X R2=%X R3=%X", uut.cpu_core_inst.reg_file_inst.regs[0], uut.cpu_core_inst.reg_file_inst.regs[1], uut.cpu_core_inst.reg_file_inst.regs[2], uut.cpu_core_inst.reg_file_inst.regs[3]);
-        $display("R4=%X R5=%X R29(SP)=%X R30(LR)=%X", uut.cpu_core_inst.reg_file_inst.regs[4], uut.cpu_core_inst.reg_file_inst.regs[5], uut.cpu_core_inst.reg_file_inst.regs[29], uut.cpu_core_inst.reg_file_inst.regs[30]);
-        $display("PC=%X SR=%X", uut.cpu_core_inst.pc_out, uut.cpu_core_inst.status_out);
+        $display("R4=%X R5=%X R10=%X R11=%X R12=%X", uut.cpu_core_inst.reg_file_inst.regs[4], uut.cpu_core_inst.reg_file_inst.regs[5], uut.cpu_core_inst.reg_file_inst.regs[10], uut.cpu_core_inst.reg_file_inst.regs[11], uut.cpu_core_inst.reg_file_inst.regs[12]);
+        $display("R29(SP)=%X R30(LR)=%X PC=%X SR=%X", uut.cpu_core_inst.reg_file_inst.regs[29], uut.cpu_core_inst.reg_file_inst.regs[30], uut.cpu_core_inst.pc_out, uut.cpu_core_inst.status_out);
         $finish;
     end
 
@@ -158,8 +158,8 @@ module tb_top;
             $display("[TB] HALT instruction executed at PC=0x%08X.", uut.cpu_core_inst.pc_out);
             $display("[TB] Registers dump:");
             $display("R0=%X R1=%X R2=%X R3=%X", uut.cpu_core_inst.reg_file_inst.regs[0], uut.cpu_core_inst.reg_file_inst.regs[1], uut.cpu_core_inst.reg_file_inst.regs[2], uut.cpu_core_inst.reg_file_inst.regs[3]);
-            $display("R4=%X R5=%X R29(SP)=%X R30(LR)=%X", uut.cpu_core_inst.reg_file_inst.regs[4], uut.cpu_core_inst.reg_file_inst.regs[5], uut.cpu_core_inst.reg_file_inst.regs[29], uut.cpu_core_inst.reg_file_inst.regs[30]);
-            $display("PC=%X SR=%X GPIO_OUT=%X", uut.cpu_core_inst.pc_out, uut.cpu_core_inst.status_out, gp_out);
+            $display("R4=%X R5=%X R10=%X R11=%X R12=%X", uut.cpu_core_inst.reg_file_inst.regs[4], uut.cpu_core_inst.reg_file_inst.regs[5], uut.cpu_core_inst.reg_file_inst.regs[10], uut.cpu_core_inst.reg_file_inst.regs[11], uut.cpu_core_inst.reg_file_inst.regs[12]);
+            $display("R29(SP)=%X R30(LR)=%X PC=%X SR=%X GPIO_OUT=%X", uut.cpu_core_inst.reg_file_inst.regs[29], uut.cpu_core_inst.reg_file_inst.regs[30], uut.cpu_core_inst.pc_out, uut.cpu_core_inst.status_out, gp_out);
             $finish;
         end
     end

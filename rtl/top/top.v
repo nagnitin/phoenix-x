@@ -320,7 +320,7 @@ module top #(
         .irq_lines       (irq_lines),
         .irq_enable_flag (1'b1), // Active high enable
         .in_isr          (cpu_in_isr),
-        .reg_addr        (periph_addr[3:0]),
+        .reg_addr        (periph_addr[5:2]),
         .reg_we          (periph_we & irq_ctrl_cs),
         .reg_wdata       (periph_wdata),
         .reg_rdata       (irq_ctrl_rdata),
@@ -336,7 +336,7 @@ module top #(
         .pin_in    (gp_in),
         .pin_out   (gp_out),
         .pin_oe    (gp_oe),
-        .reg_addr  (periph_addr[2:0]),
+        .reg_addr  (periph_addr[4:2]),
         .reg_we    (periph_we & gpio_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (gpio_rdata),
@@ -351,7 +351,7 @@ module top #(
         .rst_n     (rst_n & ~wdt_reset),
         .tx        (tx),
         .rx        (rx),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & uart_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (uart_rdata),
@@ -367,7 +367,7 @@ module top #(
         .mosi      (mosi),
         .miso      (miso),
         .cs_n      (cs_n),
-        .reg_addr  (periph_addr[2:0]),
+        .reg_addr  (periph_addr[4:2]),
         .reg_we    (periph_we & spi_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (spi_rdata),
@@ -382,7 +382,7 @@ module top #(
         .sda_oe    (sda_oe),
         .scl_in    (scl_in),
         .sda_in    (sda_in),
-        .reg_addr  (periph_addr[2:0]),
+        .reg_addr  (periph_addr[4:2]),
         .reg_we    (periph_we & i2c_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (i2c_rdata),
@@ -393,7 +393,7 @@ module top #(
     timer timer_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[2:0]),
+        .reg_addr  (periph_addr[4:2]),
         .reg_we    (periph_we & timer_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (timer_rdata),
@@ -405,7 +405,7 @@ module top #(
     pwm pwm_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[4:0]),
+        .reg_addr  (periph_addr[6:2]),
         .reg_we    (periph_we & pwm_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (pwm_rdata),
@@ -416,7 +416,7 @@ module top #(
     watchdog_timer wdt_inst (
         .clk           (clk),
         .rst_n         (rst_n),
-        .reg_addr      (periph_addr[1:0]),
+        .reg_addr      (periph_addr[3:2]),
         .reg_we        (periph_we & wdog_cs),
         .reg_wdata     (periph_wdata),
         .reg_rdata     (wdt_rdata),
@@ -428,7 +428,7 @@ module top #(
     crc_engine crc_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & (periph_addr[7:6] == 2'b01) & wdog_cs), // mapped in shared space
         .reg_wdata (periph_wdata),
         .reg_rdata (crc_rdata),
@@ -439,7 +439,7 @@ module top #(
     debug_unit dbu_inst (
         .clk          (clk),
         .rst_n        (rst_n & ~wdt_reset),
-        .reg_addr     (periph_addr[3:0]),
+        .reg_addr     (periph_addr[5:2]),
         .reg_we       (periph_we & debug_cs),
         .reg_wdata    (periph_wdata),
         .reg_rdata    (debug_rdata),
@@ -455,7 +455,7 @@ module top #(
     lcd_driver lcd_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & lcd_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (lcd_rdata),
@@ -469,7 +469,7 @@ module top #(
     oled_driver oled_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & oled_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (oled_rdata),
@@ -483,7 +483,7 @@ module top #(
     eeprom_driver ee_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & eeprom_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (eeprom_rdata),
@@ -497,7 +497,7 @@ module top #(
     seven_seg_driver seg_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & seven_seg_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (seven_seg_rdata),
@@ -509,7 +509,7 @@ module top #(
     keypad_driver keypad_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & keypad_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (keypad_rdata),
@@ -522,7 +522,7 @@ module top #(
     ultrasonic_driver us_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & ultrasonic_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (ultrasonic_rdata),
@@ -534,7 +534,7 @@ module top #(
     temp_sensor_driver temp_drv_inst (
         .clk       (clk),
         .rst_n     (rst_n & ~wdt_reset),
-        .reg_addr  (periph_addr[1:0]),
+        .reg_addr  (periph_addr[3:2]),
         .reg_we    (periph_we & temp_sensor_cs),
         .reg_wdata (periph_wdata),
         .reg_rdata (temp_sensor_rdata),
